@@ -52,42 +52,42 @@ ContextFlow is built around a **closed adaptation control loop** — an LLM-nati
 
 ```
                           ┌───────────────────────────────────────────────┐
-                          │            API GATEWAY  (FastAPI)              │
-                          │   auth · request → TaskSpec · result egress    │
+                          │            API GATEWAY  (FastAPI)             │
+                          │   auth · request → TaskSpec · result egress   │
                           └───────────────────────────┬───────────────────┘
-                                                       │ TaskSpec
-                                                       ▼
-   ┌─────────────────────────────────  ADAPTATION CONTROL LOOP  ─────────────────────────────────┐
-   │                                                                                              │
-   │   (1) MONITOR                 (2) ANALYSE                  (3) PLAN / DECIDE                  │
-   │  ┌──────────────────┐       ┌──────────────────┐        ┌──────────────────────────────┐    │
-   │  │ Context Observer │  sig  │ Signal Interpreter│ trigger│  Strategy Reasoning Engine    │    │
-   │  │ complexity·health│──────▶│ + Mismatch Detector──────▶│  ◄── CORE RESEARCH ARTIFACT    │    │
-   │  │ latency·failures │       │ (trigger conditions)│      │  LLM meta-planner             │    │
-   │  │ cost·result-qual │       └──────────────────┘        │  Strategy Library (templates) │    │
-   │  └────────▲─────────┘                                   │  Adaptation Governor (bounds) │    │
-   │           │ telemetry                                   │  Decision Ledger (audit trace)│    │
-   │           │                                             └───────────────┬──────────────┘    │
-   │           │                                              OrchestrationDirective              │
-   │           │                                                             ▼                    │
-   │  ┌────────┴──────────────────────────────  (4) EXECUTE  ───────────────────────────────┐    │
-   │  │           Orchestration Runtime  —  LangGraph graph compiled from directive          │    │
-   │  │  ┌──────────────┐    ┌──────────────┐    ┌──────────────────┐                        │    │
-   │  │  │ Planning     │    │ Execution    │    │ Retrieval        │   agents are pluggable  │    │
-   │  │  │ Agent        │    │ Agent        │    │ Agent (Qdrant RAG)│                        │    │
-   │  │  └──────────────┘    └──────────────┘    └──────────────────┘                        │    │
-   │  └─────────────────────────────────────────────────────────────────────────────────────┘    │
-   └──────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                      │ TaskSpec
+                                                      ▼
+   ┌─────────────────────────────────  ADAPTATION CONTROL LOOP  ────────────────────────────────────┐
+   │                                                                                                │
+   │   (1) MONITOR                 (2) ANALYSE                  (3) PLAN / DECIDE                   │
+   │  ┌──────────────────┐       ┌──────────────────────┐        ┌───────────────────────────────┐  │
+   │  │ Context Observer │  sig  │ Signal Interpreter   │ trigger│  Strategy Reasoning Engine    │  │
+   │  │ complexity·health│──────▶│ + Mismatch Detector  │───────▶│  ◄── CORE RESEARCH ARTIFACT   │  │
+   │  │ latency·failures │       │ (trigger conditions) │        │  LLM meta-planner             │  │
+   │  │ cost·result-qual │       └──────────────────────┘        │  Strategy Library (templates) │  │
+   │  └────────▲─────────┘                                       │  Adaptation Governor (bounds) │  │
+   │           │ telemetry                                       │  Decision Ledger (audit trace)│  │
+   │           │                                                 └───────────────┬───────────────┘  │
+   │           │                                                     OrchestrationDirective         │
+   │           │                                                             ▼                      │
+   │  ┌────────┴──────────────────────────────  (4) EXECUTE  ─────────────────────────────────┐     │
+   │  │           Orchestration Runtime  —  LangGraph graph compiled from directive           │     │
+   │  │  ┌──────────────┐    ┌──────────────┐    ┌───────────────────┐                        │     │
+   │  │  │ Planning     │    │ Execution    │    │ Retrieval         │   agents are pluggable │     │
+   │  │  │ Agent        │    │ Agent        │    │ Agent (Qdrant RAG)│                        │     │
+   │  │  └──────────────┘    └──────────────┘    └───────────────────┘                        │     │
+   │  └───────────────────────────────────────────────────────────────────────────────────────┘     │
+   └────────────────────────────────────────────────────────────────────────────────────────────────┘
                                                        │  durable steps · signals · replans
                                                        ▼
-   ┌──────────────────────────────────────────────────────────────────────────────────────────────┐
-   │  DURABLE EXECUTION & MESSAGING      Temporal (durable workflows/retries) · Kafka (signal bus)   │
-   └──────────────────────────────────────────────────────────────────────────────────────────────┘
+   ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+   │  DURABLE EXECUTION & MESSAGING      Temporal (durable workflows/retries) · Kafka (signal bus)  │
+   └────────────────────────────────────────────────────────────────────────────────────────────────┘
                                                        │
-   ┌──────────────────────────────────────────────────────────────────────────────────────────────┐
-   │  OBSERVABILITY & EVALUATION HARNESS    Prometheus · Grafana · decision traces · metrics export   │
-   │  Baseline controllers:  [static graph] · [supervisor routing] · [adaptive]  ← experiment switch  │
-   └──────────────────────────────────────────────────────────────────────────────────────────────┘
+   ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+   │  OBSERVABILITY & EVALUATION HARNESS    Prometheus · Grafana · decision traces · metrics export │
+   │  Baseline controllers:  [static graph] · [supervisor routing] · [adaptive]  ← experiment switch│
+   └────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Core component — Strategy Reasoning Engine
@@ -188,39 +188,6 @@ Baselines include static orchestration, supervisor routing, and representative a
 
 ---
 
-## Research Roadmap
-
-The roadmap below is the high-level view. The authoritative plan — with per-work-package
-**Definition of Done**, gates, risks, and reproducibility checklist — lives in
-[`research/project-plan.md`](research/project-plan.md). The schedule is **~24 weeks** (gated), with
-an MVP baseline at week 8; the original 8-week sketch is retained only as the MVP milestone (M3).
-
-| Milestone | Target | Work package | Exit gate |
-|-----------|--------|--------------|-----------|
-| M0 — Kickoff | Wk 0 | — | Gap analysis + architecture committed ✅ |
-| M1 — Foundations ready | Wk 2 | WP0 | Repo scaffolded, `docker compose up` healthy |
-| M2 — Formal model frozen | Wk 5 | WP1 (C1) | Context-signal taxonomy + strategy library |
-| M3 — Baseline MVP | Wk 8 | WP2 (RQ2) | Static + supervisor controllers run S1, durable |
-| M4 — Adaptive engine working | Wk 13 | WP3 (C2) | Bounded adaptive controller runs S1–S3 |
-| M5 — Evaluation harness ready | Wk 16 | WP4 (C3) | Coordination-quality metrics automated |
-| M6 — Results complete | Wk 21 | WP5 (C4) | Full matrix run; H1–H4 verdicts (incl. H4 overhead) |
-| M7 — Draft + artifact | Wk 24 | WP6 | First paper draft + reproducible public artifact |
-
-Current focus: **Phase 1 / WP0–WP1** — literature notes (AdaptOrch, MASFly, CARD, CLEAR,
-self-healing orchestrators), context-signal taxonomy, and repository scaffolding.
-
----
-
-## Target Publication Venues
-
-- IEEE Transactions on Services Computing
-- Journal of Artificial Intelligence Research (JAIR)
-- IEEE Intelligent Systems
-- AAMAS 2026 — International Conference on Autonomous Agents and Multi-Agent Systems
-- ICSOC 2026 — International Conference on Service-Oriented Computing
-
----
-
 ## Research Positioning
 
 ContextFlow is positioned as **operational AI systems research** — the study of intelligent systems that act, coordinate, and adapt in real enterprise environments.
@@ -231,23 +198,6 @@ ContextFlow is positioned as **operational AI systems research** — the study o
 - **Is** an investigation of how to formalise, implement, and empirically evaluate runtime-adaptive orchestration under operational constraints — building on but distinct from recent adaptive systems (AdaptOrch, MASFly, CARD, AOrchestra)
 
 This framing aligns with postdoctoral research tracks in autonomous agents, intelligent systems, AI infrastructure, and distributed AI at both university research labs and industry research groups.
-
----
-
-## Postdoctoral Collaboration (2026–2027)
-
-ContextFlow is positioned for Canadian postdoctoral research in:
-
-| Area | Potential lab alignment |
-|------|-------------------------|
-| Safe multi-agent orchestration | Poupart (Waterloo), Ganapathi (Carleton) |
-| Planning and formal execution | McIlraith (Toronto / Vector) |
-| Probabilistic orchestration inference | Wood (UBC / PLAI) |
-| Enterprise-grounded evaluation | Mitacs Elevate + insurance/fintech partner |
-
-**Materials:** [Postdoc summary](../../apply/contextflow-postdoc-summary.md) · [Outreach emails](../../apply/outreach/) · [Research statements](../../apply/research-statements/)
-
-Research inquiries and fellowship sponsorship discussions: [mahboub.parhizkar@gmail.com](mailto:mahboub.parhizkar@gmail.com)
 
 ---
 
