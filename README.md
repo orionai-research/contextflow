@@ -188,29 +188,6 @@ Baselines include static orchestration, supervisor routing, and representative a
 
 ---
 
-## Research Roadmap
-
-The roadmap below is the high-level view. The authoritative plan — with per-work-package
-**Definition of Done**, gates, risks, and reproducibility checklist — lives in
-[`research/project-plan.md`](research/project-plan.md). The schedule is **~24 weeks** (gated), with
-an MVP baseline at week 8; the original 8-week sketch is retained only as the MVP milestone (M3).
-
-| Milestone | Target | Work package | Exit gate |
-|-----------|--------|--------------|-----------|
-| M0 — Kickoff | Wk 0 | — | Gap analysis + architecture committed ✅ |
-| M1 — Foundations ready | Wk 2 | WP0 | Repo scaffolded, `docker compose up` healthy |
-| M2 — Formal model frozen | Wk 5 | WP1 (C1) | Context-signal taxonomy + strategy library |
-| M3 — Baseline MVP | Wk 8 | WP2 (RQ2) | Static + supervisor controllers run S1, durable |
-| M4 — Adaptive engine working | Wk 13 | WP3 (C2) | Bounded adaptive controller runs S1–S3 |
-| M5 — Evaluation harness ready | Wk 16 | WP4 (C3) | Coordination-quality metrics automated |
-| M6 — Results complete | Wk 21 | WP5 (C4) | Full matrix run; H1–H4 verdicts (incl. H4 overhead) |
-| M7 — Draft + artifact | Wk 24 | WP6 | First paper draft + reproducible public artifact |
-
-Current focus: **Phase 1 / WP0–WP1** — literature notes (AdaptOrch, MASFly, CARD, CLEAR,
-self-healing orchestrators), context-signal taxonomy, and repository scaffolding.
-
----
-
 ## Research Positioning
 
 ContextFlow is positioned as **operational AI systems research** — the study of intelligent systems that act, coordinate, and adapt in real enterprise environments.
