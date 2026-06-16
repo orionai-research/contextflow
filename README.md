@@ -52,42 +52,42 @@ ContextFlow is built around a **closed adaptation control loop** — an LLM-nati
 
 ```
                           ┌───────────────────────────────────────────────┐
-                          │            API GATEWAY  (FastAPI)              │
-                          │   auth · request → TaskSpec · result egress    │
+                          │            API GATEWAY  (FastAPI)             │
+                          │   auth · request → TaskSpec · result egress   │
                           └───────────────────────────┬───────────────────┘
-                                                       │ TaskSpec
-                                                       ▼
-   ┌─────────────────────────────────  ADAPTATION CONTROL LOOP  ─────────────────────────────────┐
-   │                                                                                              │
-   │   (1) MONITOR                 (2) ANALYSE                  (3) PLAN / DECIDE                  │
-   │  ┌──────────────────┐       ┌──────────────────┐        ┌──────────────────────────────┐    │
-   │  │ Context Observer │  sig  │ Signal Interpreter│ trigger│  Strategy Reasoning Engine    │    │
-   │  │ complexity·health│──────▶│ + Mismatch Detector──────▶│  ◄── CORE RESEARCH ARTIFACT    │    │
-   │  │ latency·failures │       │ (trigger conditions)│      │  LLM meta-planner             │    │
-   │  │ cost·result-qual │       └──────────────────┘        │  Strategy Library (templates) │    │
-   │  └────────▲─────────┘                                   │  Adaptation Governor (bounds) │    │
-   │           │ telemetry                                   │  Decision Ledger (audit trace)│    │
-   │           │                                             └───────────────┬──────────────┘    │
-   │           │                                              OrchestrationDirective              │
-   │           │                                                             ▼                    │
-   │  ┌────────┴──────────────────────────────  (4) EXECUTE  ───────────────────────────────┐    │
-   │  │           Orchestration Runtime  —  LangGraph graph compiled from directive          │    │
-   │  │  ┌──────────────┐    ┌──────────────┐    ┌──────────────────┐                        │    │
-   │  │  │ Planning     │    │ Execution    │    │ Retrieval        │   agents are pluggable  │    │
-   │  │  │ Agent        │    │ Agent        │    │ Agent (Qdrant RAG)│                        │    │
-   │  │  └──────────────┘    └──────────────┘    └──────────────────┘                        │    │
-   │  └─────────────────────────────────────────────────────────────────────────────────────┘    │
-   └──────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                      │ TaskSpec
+                                                      ▼
+   ┌─────────────────────────────────  ADAPTATION CONTROL LOOP  ────────────────────────────────────┐
+   │                                                                                                │
+   │   (1) MONITOR                 (2) ANALYSE                  (3) PLAN / DECIDE                   │
+   │  ┌──────────────────┐       ┌──────────────────────┐        ┌───────────────────────────────┐  │
+   │  │ Context Observer │  sig  │ Signal Interpreter   │ trigger│  Strategy Reasoning Engine    │  │
+   │  │ complexity·health│──────▶│ + Mismatch Detector  │───────▶│  ◄── CORE RESEARCH ARTIFACT   │  │
+   │  │ latency·failures │       │ (trigger conditions) │        │  LLM meta-planner             │  │
+   │  │ cost·result-qual │       └──────────────────────┘        │  Strategy Library (templates) │  │
+   │  └────────▲─────────┘                                       │  Adaptation Governor (bounds) │  │
+   │           │ telemetry                                       │  Decision Ledger (audit trace)│  │
+   │           │                                                 └───────────────┬───────────────┘  │
+   │           │                                                     OrchestrationDirective         │
+   │           │                                                             ▼                      │
+   │  ┌────────┴──────────────────────────────  (4) EXECUTE  ─────────────────────────────────┐     │
+   │  │           Orchestration Runtime  —  LangGraph graph compiled from directive           │     │
+   │  │  ┌──────────────┐    ┌──────────────┐    ┌───────────────────┐                        │     │
+   │  │  │ Planning     │    │ Execution    │    │ Retrieval         │   agents are pluggable │     │
+   │  │  │ Agent        │    │ Agent        │    │ Agent (Qdrant RAG)│                        │     │
+   │  │  └──────────────┘    └──────────────┘    └───────────────────┘                        │     │
+   │  └───────────────────────────────────────────────────────────────────────────────────────┘     │
+   └────────────────────────────────────────────────────────────────────────────────────────────────┘
                                                        │  durable steps · signals · replans
                                                        ▼
-   ┌──────────────────────────────────────────────────────────────────────────────────────────────┐
-   │  DURABLE EXECUTION & MESSAGING      Temporal (durable workflows/retries) · Kafka (signal bus)   │
-   └──────────────────────────────────────────────────────────────────────────────────────────────┘
+   ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+   │  DURABLE EXECUTION & MESSAGING      Temporal (durable workflows/retries) · Kafka (signal bus)  │
+   └────────────────────────────────────────────────────────────────────────────────────────────────┘
                                                        │
-   ┌──────────────────────────────────────────────────────────────────────────────────────────────┐
-   │  OBSERVABILITY & EVALUATION HARNESS    Prometheus · Grafana · decision traces · metrics export   │
-   │  Baseline controllers:  [static graph] · [supervisor routing] · [adaptive]  ← experiment switch  │
-   └──────────────────────────────────────────────────────────────────────────────────────────────┘
+   ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+   │  OBSERVABILITY & EVALUATION HARNESS    Prometheus · Grafana · decision traces · metrics export │
+   │  Baseline controllers:  [static graph] · [supervisor routing] · [adaptive]  ← experiment switch│
+   └────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Core component — Strategy Reasoning Engine
