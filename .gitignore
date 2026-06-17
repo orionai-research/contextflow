@@ -1,12 +1,8 @@
-# Default ignored files
-/shelf/
-/.idea/
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
-../ContextFlow_daily-plan.md
-../ContextFlow_linkedin-posts.md
-../ContextFlow_paper-outline.md
-../research/project-plan.md
+# JetBrains IDE
+.idea/
+
+# Local planning and drafts (not for the repo)
+ContextFlow_daily-plan.md
+ContextFlow_linkedin-posts.md
+ContextFlow_paper-outline.md
+research/project-plan.md
